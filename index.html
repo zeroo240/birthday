@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ulang Tahun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF6F2;
+    --blush:#F6D3D3;
+    --rose:#D98C96;
+    --plum:#5B3A4B;
+    --plum-soft:#8A6575;
+    --gold:#C9A15F;
+    --lavender:#E9DEEF;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    background:var(--cream);
+    color:var(--plum);
+    font-family:'Quicksand', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  body{
+    position:relative;
+  }
+
+  /* Floating petals background */
+  #petals{
+    position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden;
+  }
+  .petal{
+    position:absolute; top:-40px;
+    font-size:18px;
+    opacity:0.55;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+    color:var(--rose);
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,0.05));
+  }
+  @keyframes fall{
+    0%{ transform:translateY(-10vh) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:0.6; }
+    90%{ opacity:0.5; }
+    100%{ transform:translateY(110vh) translateX(var(--drift,40px)) rotate(360deg); opacity:0; }
+  }
+
+  main{
+    position:relative; z-index:2;
+    max-width:900px;
+    margin:0 auto;
+    padding:60px 24px 120px;
+  }
+
+  .eyebrow{
+    text-align:center;
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:18px;
+  }
+
+  h1.name{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-weight:600;
+    text-align:center;
+    font-size:clamp(42px, 9vw, 88px);
+    color:var(--plum);
+    line-height:1.05;
+    margin-bottom:10px;
+  }
+
+  .subtitle{
+    text-align:center;
+    color:var(--plum-soft);
+    font-size:16px;
+    margin-bottom:48px;
+  }
+
+  /* Countdown */
+  .countdown{
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:8px;
+  }
+  .count-card{
+    background:var(--white);
+    border-radius:24px 24px 32px 32px;
+    padding:22px 18px;
+    min-width:88px;
+    text-align:center;
+    box-shadow:0 10px 30px -12px rgba(217,140,150,0.35);
+    border:1px solid var(--blush);
+    position:relative;
+  }
+  .count-card::before{
+    content:"";
+    position:absolute;
+    top:-6px; left:50%;
+    transform:translateX(-50%);
+    width:22px; height:12px;
+    background:var(--rose);
+    border-radius:0 0 12px 12px;
+    opacity:0.5;
+  }
+  .count-num{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:clamp(32px,6vw,48px);
+    color:var(--rose);
+    line-height:1;
+  }
+  .count-label{
+    margin-top:6px;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.15em;
+    color:var(--plum-soft);
+  }
+
+  .celebrate{
+    display:none;
+    text-align:center;
+    padding:40px 20px;
+  }
+  .celebrate h2{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:clamp(30px,6vw,52px);
+    color:var(--rose);
+    margin-bottom:8px;
+  }
+  .celebrate p{ color:var(--plum-soft); }
+
+  /* Divider */
+  .divider{
+    display:flex; align-items:center; gap:16px;
+    margin:64px 0 28px;
+  }
+  .divider::before,.divider::after{
+    content:""; flex:1; height:1px; background:var(--blush);
+  }
+  .divider span{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    color:var(--gold);
+    font-size:20px;
+    white-space:nowrap;
+  }
+
+  /* Gallery */
+  .gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(140px,1fr));
+    gap:14px;
+  }
+  .gallery img{
+    width:100%; height:180px; object-fit:cover;
+    border-radius:16px;
+    box-shadow:0 8px 20px -10px rgba(91,58,75,0.3);
+    border:3px solid var(--white);
+  }
+  .gallery-empty{
+    text-align:center; color:var(--plum-soft); font-size:14px; padding:20px;
+    font-style:italic;
+  }
+
+  /* Message */
+  .message-card{
+    background:var(--white);
+    border-radius:28px;
+    padding:36px 30px;
+    text-align:center;
+    box-shadow:0 12px 34px -16px rgba(217,140,150,0.4);
+    border:1px solid var(--lavender);
+    position:relative;
+  }
+  .message-card .quote-mark{
+    font-family:'Cormorant Garamond', serif;
+    font-size:60px;
+    color:var(--gold);
+    opacity:0.5;
+    line-height:0.5;
+    display:block;
+    margin-bottom:14px;
+  }
+  .message-text{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:clamp(18px,3vw,24px);
+    color:var(--plum);
+    line-height:1.6;
+    white-space:pre-wrap;
+  }
+
+  /* Admin trigger */
+  .admin-trigger{
+    position:fixed;
+    bottom:16px; right:16px;
+    z-index:5;
+    background:rgba(255,255,255,0.7);
+    border:1px solid var(--blush);
+    color:var(--plum-soft);
+    font-family:'Quicksand', sans-serif;
+    font-size:11px;
+    letter-spacing:0.08em;
+    padding:8px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    backdrop-filter:blur(4px);
+  }
+  .admin-trigger:hover{ background:var(--white); color:var(--plum); }
+
+  /* Modal */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(91,58,75,0.45);
+    display:none; align-items:center; justify-content:center;
+    z-index:10; padding:20px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    background:var(--cream);
+    border-radius:24px;
+    max-width:520px; width:100%;
+    max-height:88vh; overflow-y:auto;
+    padding:32px 28px;
+    box-shadow:0 30px 60px -20px rgba(91,58,75,0.5);
+  }
+  .modal h3{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:28px;
+    color:var(--plum);
+    margin-bottom:18px;
+  }
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block; font-size:12px; text-transform:uppercase;
+    letter-spacing:0.08em; color:var(--plum-soft); margin-bottom:6px; font-weight:600;
+  }
+  .field input[type=text], .field input[type=password], .field input[type=datetime-local], .field textarea{
+    width:100%; padding:11px 14px; border-radius:12px;
+    border:1px solid var(--blush); background:var(--white);
+    font-family:'Quicksand', sans-serif; font-size:14px; color:var(--plum);
+  }
+  .field textarea{ resize:vertical; min-height:90px; }
+  .field input[type=file]{ font-size:13px; }
+  .thumbs{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .thumb{ position:relative; width:64px; height:64px; border-radius:10px; overflow:hidden; border:2px solid var(--white); box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+  .thumb img{ width:100%; height:100%; object-fit:cover; }
+  .thumb button{
+    position:absolute; top:-2px; right:-2px;
+    background:var(--rose); color:#fff; border:none;
+    width:18px; height:18px; border-radius:50%;
+    font-size:11px; cursor:pointer; line-height:1;
+  }
+  .btn{
+    display:inline-block;
+    padding:12px 22px;
+    border-radius:999px;
+    border:none;
+    background:var(--rose);
+    color:#fff;
+    font-family:'Quicksand', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    letter-spacing:0.02em;
+  }
+  .btn:hover{ background:var(--plum); }
+  .btn.secondary{
+    background:transparent; color:var(--plum-soft); border:1px solid var(--blush);
+  }
+  .btn.secondary:hover{ background:var(--white); }
+  .modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:22px; }
+  .hint{ font-size:12px; color:var(--plum-soft); margin-top:-8px; margin-bottom:14px; }
+  .status-msg{ font-size:13px; margin-top:10px; text-align:center; }
+  .status-msg.error{ color:#b0475a; }
+  .status-msg.ok{ color:#4a7a5a; }
+
+  /* Confetti */
+  .confetti-piece{
+    position:fixed; top:-20px; z-index:20;
+    width:8px; height:14px;
+    border-radius:2px;
+    animation:confetti-fall linear forwards;
+  }
+  @keyframes confetti-fall{
+    to{ transform:translateY(105vh) rotate(540deg); opacity:0.9; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .petal{ animation:none; display:none; }
+    .confetti-piece{ animation:none; display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="petals"></div>
+
+<main>
+  <div class="eyebrow">Menghitung hari menuju</div>
+  <h1 class="name" id="nameDisplay">Nama Tersayang</h1>
+  <p class="subtitle" id="subtitleDisplay">hari spesial akan segera tiba…</p>
+
+  <div class="countdown" id="countdown">
+    <div class="count-card"><div class="count-num" id="cd-days">--</div><div class="count-label">Hari</div></div>
+    <div class="count-card"><div class="count-num" id="cd-hours">--</div><div class="count-label">Jam</div></div>
+    <div class="count-card"><div class="count-num" id="cd-mins">--</div><div class="count-label">Menit</div></div>
+    <div class="count-card"><div class="count-num" id="cd-secs">--</div><div class="count-label">Detik</div></div>
+  </div>
+
+  <div class="celebrate" id="celebrate">
+    <h2 id="celebrateTitle">Selamat Ulang Tahun! 🎉</h2>
+    <p>Semoga harimu dipenuhi cinta dan kebahagiaan.</p>
+  </div>
+
+  <div class="divider"><span>Galeri Kenangan</span></div>
+  <div class="gallery" id="gallery">
+    <div class="gallery-empty">Belum ada foto yang ditambahkan.</div>
+  </div>
+
+  <div class="divider"><span>Untuk Kamu</span></div>
+  <div class="message-card">
+    <span class="quote-mark">"</span>
+    <div class="message-text" id="messageDisplay">Kata-kata ucapan akan muncul di sini.</div>
+  </div>
+</main>
+
+<button class="admin-trigger" id="adminTrigger">Admin</button>
+
+<!-- Password Modal -->
+<div class="modal-overlay" id="pwOverlay">
+  <div class="modal">
+    <h3>Masuk Mode Admin</h3>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="pwInput" placeholder="Masukkan password" />
+    </div>
+    <div class="status-msg error" id="pwError" style="display:none;">Password salah, coba lagi.</div>
+    <div class="modal-actions">
+      <button class="btn secondary" id="pwCancel">Batal</button>
+      <button class="btn" id="pwSubmit">Masuk</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Modal -->
+<div class="modal-overlay" id="adminOverlay">
+  <div class="modal">
+    <h3>Panel Admin</h3>
+
+    <div class="field">
+      <label>Nama</label>
+      <input type="text" id="inputName" placeholder="Nama yang ulang tahun" />
+    </div>
+
+    <div class="field">
+      <label>Sub-judul (opsional)</label>
+      <input type="text" id="inputSubtitle" placeholder="mis. hari spesial akan segera tiba…" />
+    </div>
+
+    <div class="field">
+      <label>Tanggal & Jam Ulang Tahun</label>
+      <input type="datetime-local" id="inputDate" />
+    </div>
+
+    <div class="field">
+      <label>Judul saat perayaan (opsional)</label>
+      <input type="text" id="inputCelebrateTitle" placeholder="mis. Selamat Ulang Tahun, Sayang! 🎉" />
+    </div>
+
+    <div class="field">
+      <label>Kata-kata Ucapan</label>
+      <textarea id="inputMessage" placeholder="Tulis ucapan ulang tahunmu di sini..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Foto Galeri (maks 8, otomatis dikompres)</label>
+      <input type="file" id="inputImages" accept="image/*" multiple />
+      <div class="hint">Foto akan dikecilkan otomatis agar muat. Klik x pada thumbnail untuk menghapus.</div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+
+    <div class="field">
+      <label>Ganti Password Admin (opsional)</label>
+      <input type="text" id="inputNewPassword" placeholder="Kosongkan jika tidak ingin mengganti" />
+    </div>
+
+    <div class="status-msg" id="adminStatus"></div>
+
+    <div class="modal-actions">
+      <button class="btn secondary" id="adminCancel">Tutup</button>
+      <button class="btn" id="adminSave">Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'birthday-site-data';
+const DEFAULT_PASSWORD = 'cinta2025';
+let currentData = null;
+let pendingImages = [];
+let countdownTimer = null;
+
+const defaultData = () => ({
+  name: 'Nama Tersayang',
+  subtitle: 'hari spesial akan segera tiba…',
+  celebrateTitle: 'Selamat Ulang Tahun! 🎉',
+  targetDate: '',
+  message: 'Kata-kata ucapan akan muncul di sini.',
+  images: [],
+  password: DEFAULT_PASSWORD
+});
+
+// ---------- Petals background ----------
+function initPetals(){
+  const container = document.getElementById('petals');
+  const symbols = ['🌸','💗','✨','🌷'];
+  for(let i=0;i<16;i++){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.setProperty('--drift', (Math.random()*80-40)+'px');
+    p.style.animationDuration = (10 + Math.random()*10) + 's';
+    p.style.animationDelay = (Math.random()*10) + 's';
+    p.style.fontSize = (14 + Math.random()*12) + 'px';
+    container.appendChild(p);
+  }
+}
+
+// ---------- Load / Save ----------
+async function loadData(){
+  try{
+    const result = await window.storage.get(STORAGE_KEY, true);
+    if(result && result.value){
+      currentData = JSON.parse(result.value);
+    } else {
+      currentData = defaultData();
+    }
+  }catch(e){
+    currentData = defaultData();
+  }
+  renderPublic();
+}
+
+async function saveData(){
+  try{
+    const result = await window.storage.set(STORAGE_KEY, JSON.stringify(currentData), true);
+    return !!result;
+  }catch(e){
+    console.error('Gagal menyimpan', e);
+    return false;
+  }
+}
+
+// ---------- Render public view ----------
+function renderPublic(){
+  document.getElementById('nameDisplay').textContent = currentData.name || 'Nama Tersayang';
+  document.getElementById('subtitleDisplay').textContent = currentData.subtitle || '';
+  document.getElementById('celebrateTitle').textContent = currentData.celebrateTitle || 'Selamat Ulang Tahun! 🎉';
+  document.getElementById('messageDisplay').textContent = currentData.message || 'Kata-kata ucapan akan muncul di sini.';
+
+  const gallery = document.getElementById('gallery');
+  if(currentData.images && currentData.images.length > 0){
+    gallery.innerHTML = '';
+    currentData.images.forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      gallery.appendChild(img);
+    });
+  } else {
+    gallery.innerHTML = '<div class="gallery-empty">Belum ada foto yang ditambahkan.</div>';
+  }
+
+  startCountdown();
+}
+
+function startCountdown(){
+  if(countdownTimer) clearInterval(countdownTimer);
+  const target = currentData.targetDate ? new Date(currentData.targetDate).getTime() : null;
+
+  function tick(){
+    if(!target || isNaN(target)){
+      document.getElementById('cd-days').textContent = '--';
+      document.getElementById('cd-hours').textContent = '--';
+      document.getElementById('cd-mins').textContent = '--';
+      document.getElementById('cd-secs').textContent = '--';
+      return;
+    }
+    const now = Date.now();
+    const diff = target - now;
+
+    if(diff <= 0){
+      document.getElementById('countdown').style.display = 'none';
+      document.getElementById('celebrate').style.display = 'block';
+      launchConfetti();
+      clearInterval(countdownTimer);
+      return;
+    } else {
+      document.getElementById('countdown').style.display = 'flex';
+      document.getElementById('celebrate').style.display = 'none';
+    }
+
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const secs = Math.floor((diff % (1000*60)) / 1000);
+
+    document.getElementById('cd-days').textContent = days;
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
+  }
+  tick();
+  countdownTimer = setInterval(tick, 1000);
+}
+
+let confettiLaunched = false;
+function launchConfetti(){
+  if(confettiLaunched) return;
+  confettiLaunched = true;
+  const colors = ['#D98C96','#C9A15F','#E9DEEF','#F6D3D3','#8A6575'];
+  for(let i=0;i<60;i++){
+    setTimeout(()=>{
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = Math.random()*100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDuration = (2.5 + Math.random()*2) + 's';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(), 5000);
+    }, i*40);
+  }
+}
+
+// ---------- Image compression ----------
+function compressImage(file, maxWidth=800, quality=0.72){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let w = img.width, h = img.height;
+        if(w > maxWidth){
+          h = Math.round(h * (maxWidth/w));
+          w = maxWidth;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderThumbs(){
+  const thumbs = document.getElementById('thumbs');
+  thumbs.innerHTML = '';
+  pendingImages.forEach((src, idx)=>{
+    const t = document.createElement('div');
+    t.className = 'thumb';
+    t.innerHTML = `<img src="${src}"><button data-idx="${idx}">×</button>`;
+    thumbs.appendChild(t);
+  });
+  thumbs.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      pendingImages.splice(parseInt(btn.dataset.idx),1);
+      renderThumbs();
+    });
+  });
+}
+
+// ---------- Admin auth flow ----------
+const adminTrigger = document.getElementById('adminTrigger');
+const pwOverlay = document.getElementById('pwOverlay');
+const pwInput = document.getElementById('pwInput');
+const pwError = document.getElementById('pwError');
+const adminOverlay = document.getElementById('adminOverlay');
+
+adminTrigger.addEventListener('click', ()=>{
+  pwInput.value = '';
+  pwError.style.display = 'none';
+  pwOverlay.classList.add('open');
+  setTimeout(()=>pwInput.focus(), 50);
+});
+
+document.getElementById('pwCancel').addEventListener('click', ()=>{
+  pwOverlay.classList.remove('open');
+});
+
+document.getElementById('pwSubmit').addEventListener('click', checkPassword);
+pwInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') checkPassword(); });
+
+function checkPassword(){
+  const entered = pwInput.value;
+  const correct = currentData.password || DEFAULT_PASSWORD;
+  if(entered === correct){
+    pwOverlay.classList.remove('open');
+    openAdminPanel();
+  } else {
+    pwError.style.display = 'block';
+  }
+}
+
+function openAdminPanel(){
+  document.getElementById('inputName').value = currentData.name || '';
+  document.getElementById('inputSubtitle').value = currentData.subtitle || '';
+  document.getElementById('inputCelebrateTitle').value = currentData.celebrateTitle || '';
+  document.getElementById('inputDate').value = currentData.targetDate || '';
+  document.getElementById('inputMessage').value = currentData.message || '';
+  document.getElementById('inputNewPassword').value = '';
+  pendingImages = [...(currentData.images || [])];
+  renderThumbs();
+  document.getElementById('adminStatus').textContent = '';
+  adminOverlay.classList.add('open');
+}
+
+document.getElementById('adminCancel').addEventListener('click', ()=>{
+  adminOverlay.classList.remove('open');
+});
+
+document.getElementById('inputImages').addEventListener('change', async (e)=>{
+  const files = Array.from(e.target.files);
+  const status = document.getElementById('adminStatus');
+  for(const file of files){
+    if(pendingImages.length >= 8){
+      status.textContent = 'Maksimal 8 foto tercapai.';
+      status.className = 'status-msg error';
+      break;
+    }
+    try{
+      const compressed = await compressImage(file);
+      pendingImages.push(compressed);
+      renderThumbs();
+    }catch(err){
+      console.error(err);
+    }
+  }
+  e.target.value = '';
+});
+
+document.getElementById('adminSave').addEventListener('click', async ()=>{
+  const status = document.getElementById('adminStatus');
+  status.textContent = 'Menyimpan...';
+  status.className = 'status-msg';
+
+  const newPassword = document.getElementById('inputNewPassword').value.trim();
+
+  currentData = {
+    ...currentData,
+    name: document.getElementById('inputName').value.trim() || 'Nama Tersayang',
+    subtitle: document.getElementById('inputSubtitle').value.trim(),
+    celebrateTitle: document.getElementById('inputCelebrateTitle').value.trim() || 'Selamat Ulang Tahun! 🎉',
+    targetDate: document.getElementById('inputDate').value,
+    message: document.getElementById('inputMessage').value.trim() || 'Kata-kata ucapan akan muncul di sini.',
+    images: pendingImages,
+    password: newPassword || currentData.password || DEFAULT_PASSWORD
+  };
+
+  const ok = await saveData();
+  if(ok){
+    status.textContent = 'Tersimpan!';
+    status.className = 'status-msg ok';
+    confettiLaunched = false;
+    renderPublic();
+    setTimeout(()=>{ adminOverlay.classList.remove('open'); }, 700);
+  } else {
+    status.textContent = 'Gagal menyimpan, coba lagi.';
+    status.className = 'status-msg error';
+  }
+});
+
+// ---------- Init ----------
+initPetals();
+loadData();
+</script>
+
+</body>
+</html>
